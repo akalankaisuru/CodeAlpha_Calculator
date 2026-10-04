@@ -1,9 +1,7 @@
-// ---------- Get elements ----------
 const currentEl = document.getElementById('current');
 const previousEl = document.getElementById('previous');
 const buttonsEl = document.querySelector('.buttons');
 
-// ---------- Calculator state ----------
 let current = '0';          // number being typed / shown
 let previous = '';          // first number, waiting for the second
 let operator = null;        // + − × ÷
@@ -11,7 +9,6 @@ let awaitingNumber = false; // true right after pressing an operator
 let justCalculated = false; // true right after pressing =
 let lastExpression = '';    // e.g. "12 × 3 ="
 
-// ---------- Display ----------
 function updateDisplay() {
   currentEl.textContent = current;
 
@@ -24,11 +21,9 @@ function updateDisplay() {
   }
 }
 
-// ---------- Actions ----------
 function appendNumber(num) {
   if (current === 'Error') clearAll();
 
-  // Start a fresh number after an operator or after "="
   if (awaitingNumber || justCalculated) {
     current = '0';
     awaitingNumber = false;
@@ -48,13 +43,11 @@ function appendNumber(num) {
 function chooseOperator(op) {
   if (current === 'Error') return;
 
-  // Pressed two operators in a row: just change the operator
   if (operator && awaitingNumber) {
     operator = op;
     return;
   }
 
-  // Chain calculations: 2 + 3 + ... calculates 2 + 3 first
   if (operator) {
     calculate();
     if (current === 'Error') return;
@@ -90,7 +83,6 @@ function calculate() {
   }
 
   lastExpression = `${previous} ${operator} ${current} =`;
-  // toPrecision fixes problems like 0.1 + 0.2 = 0.30000000000000004
   current = String(parseFloat(result.toPrecision(12)));
   previous = '';
   operator = null;
@@ -120,7 +112,6 @@ function percent() {
   current = String(parseFloat((parseFloat(current) / 100).toPrecision(12)));
 }
 
-// ---------- Handle any button (mouse or keyboard) ----------
 function handleButton(button) {
   const { number, operator: op, action } = button.dataset;
 
@@ -134,13 +125,11 @@ function handleButton(button) {
   updateDisplay();
 }
 
-// One listener for all buttons (event delegation)
 buttonsEl.addEventListener('click', event => {
   const button = event.target.closest('.btn');
   if (button) handleButton(button);
 });
 
-// ---------- Keyboard support ----------
 const operatorKeys = { '+': '+', '-': '−', '*': '×', 'x': '×', 'X': '×', '/': '÷' };
 
 function getSelector(key) {
